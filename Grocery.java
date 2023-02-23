@@ -7,6 +7,8 @@ public class Grocery {
     final static Scanner scanner = new Scanner(System.in);
     static String inputBuffer;
 
+    static Cart cart = new Cart();
+
     public static void main(String[] args) {
 
         println("Welcome to " + STORE_NAME);
@@ -48,7 +50,14 @@ public class Grocery {
         inputBuffer = scanner.nextLine();
         Product product = Warehouse.getProductByName(inputBuffer, chosenSection);
         if (product != null) {
-            print(product.getName() + " " + product.getPricePerUnit() + "$");
+            println(product.getName() + ": " + product.getPricePerUnit() + "$/" + product.getUnit());
+            print("How much/many of it you need?: ");
+
+            // TODO: make it safe
+            double quantity = scanner.nextDouble();
+            Bundle bundle = new Bundle(product, quantity);
+            cart.add(bundle);
+
         } else {
             print("I'm sorry but there is no such product.");
         }
