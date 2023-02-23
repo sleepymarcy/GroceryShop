@@ -1,3 +1,4 @@
+import java.util.Dictionary;
 import java.util.Scanner;
 
 public class Grocery {
@@ -23,13 +24,13 @@ public class Grocery {
 
     public static void chooseSection(String sectionName) {
         Product[] chosenSection;
-        if (sectionName.equalsIgnoreCase("fruits")) {
+        if (sectionName.equalsIgnoreCase("Fruits")) {
             chosenSection = Warehouse.fruits;
-        } else if (sectionName.equalsIgnoreCase("vegetables")) {
+        } else if (sectionName.equalsIgnoreCase("Vegetables")) {
             chosenSection = Warehouse.vegetables;
-        } else if (sectionName.equalsIgnoreCase("diary")) {
+        } else if (sectionName.equalsIgnoreCase("Diary")) {
             chosenSection = Warehouse.diary;
-        } else if (sectionName.equalsIgnoreCase("beverages")) {
+        } else if (sectionName.equalsIgnoreCase("Beverages")) {
             chosenSection = Warehouse.beverages;
         } else {
             println("There is no such section, sweetheart. :(");
@@ -37,7 +38,7 @@ public class Grocery {
         }
 
         for (Product product : chosenSection) {
-            print(product.getName() + ": " + product.getPricePerUnit() + "$/" + product.getUnit());
+            println(product.getName() + ": " + product.getPricePerUnit() + "$/" + product.getUnit());
         }
         println("");
 
@@ -46,13 +47,15 @@ public class Grocery {
 
         inputBuffer = scanner.nextLine();
         Product product = Warehouse.getProductByName(inputBuffer, chosenSection);
+        if (product != null) {
+            print(product.getName() + " " + product.getPricePerUnit() + "$");
+        } else {
+            print("I'm sorry but there is no such product.");
+        }
 
         // println("Do you want to add this to you cart? ");
-
         // if (input.equalsIgnoreCase("yes")) {
-
         // } else if (input.equalsIgnoreCase("no")) {
-
         // } else {
         // println("I can only take yes or no as an answear.");
         // }
