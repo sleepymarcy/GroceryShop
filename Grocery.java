@@ -3,102 +3,60 @@ import java.util.Scanner;
 public class Grocery {
     final static String STORE_NAME = "Kichmart";
 
-    final static String[] sections = {
-            "fruits", "vegetables", "diary", "beverages"
-    };
-
-    final static String[] fruits = {
-            "banana", "apple", "orange", "kiwi", "lemon",
-            "melon", "papaya", "peach", "pear", "plum",
-            "grapes", "watermelon", "pineapple", "strawberry", "lychee"
-    };
-    final static double[] fruitPrices = {
-            7, 2, 5, 8, 2,
-            6, 7, 4, 9, 11,
-            5, 6, 2, 1, 12
-    };
-
-    final static String[] vegetables = {
-            "potato", "tomato", "poe-tatoh", "toe-matoh"
-    };
-    final static double[] vegetablePrices = {
-            2, 2, 4, 4
-    };
-
-    final static String[] diary = {
-            "cheese", "milk", "butter"
-    };
-    final static double[] diaryPrices = {
-            4, 1, 5
-    };
-
-    final static String[] beverages = {
-            "Fizzy Bublech", "orange juice", "sparkling water"
-    };
-    final static double[] beveragesPrices = {
-            3, 2, 1
-    };
-
     final static Scanner scanner = new Scanner(System.in);
-    static String input;
+    static String inputBuffer;
 
     public static void main(String[] args) {
 
         println("Welcome to " + STORE_NAME);
 
         print("We have: ");
-        for (String section : sections) {
+        for (String section : Warehouse.sections) {
             print(section + " ");
         }
         println("");
         print("What section are you interested in?: ");
 
-        input = scanner.nextLine();
-        chooseSection(input);
+        inputBuffer = scanner.nextLine();
+        chooseSection(inputBuffer);
     }
 
-    public static void chooseSection(String s) {
-        String[] chosenSection;
-        double[] chosenSectionPrices;
-        if (s.toLowerCase().equals("fruits")) {
-            chosenSection = fruits;
-            chosenSectionPrices = fruitPrices;
-        } else if (s.toLowerCase().equals("vegetables")) {
-            chosenSection = vegetables;
-            chosenSectionPrices = vegetablePrices;
-        } else if (s.toLowerCase().equals("diary")) {
-            chosenSection = diary;
-            chosenSectionPrices = diaryPrices;
-        } else if (s.toLowerCase().equals("beverages")) {
-            chosenSection = beverages;
-            chosenSectionPrices = beveragesPrices;
+    public static void chooseSection(String sectionName) {
+        Product[] chosenSection;
+        if (sectionName.equalsIgnoreCase("fruits")) {
+            chosenSection = Warehouse.fruits;
+        } else if (sectionName.equalsIgnoreCase("vegetables")) {
+            chosenSection = Warehouse.vegetables;
+        } else if (sectionName.equalsIgnoreCase("diary")) {
+            chosenSection = Warehouse.diary;
+        } else if (sectionName.equalsIgnoreCase("beverages")) {
+            chosenSection = Warehouse.beverages;
         } else {
             println("There is no such section, sweetheart. :(");
             return;
         }
 
-        for (String e : chosenSection) {
-            print(e + " ");
+        for (Product product : chosenSection) {
+            print(product.getName() + ": " + product.getPricePerUnit() + "$/" + product.getUnit());
         }
         println("");
 
-        print("What " + s + " are you interested in?: ");
+        // sectionName is a string for instance "fruits"
+        print("What " + sectionName + " are you interested in?: ");
 
-        input = scanner.nextLine();
-        int i = getIndexOf(input, chosenSection);        
-        println(chosenSection[i] + " costs: " + chosenSectionPrices[i] + " $.");
+        inputBuffer = scanner.nextLine();
+        Product product = Warehouse.getProductByName(inputBuffer, chosenSection);
 
-    }
+        // println("Do you want to add this to you cart? ");
 
-    public static int getIndexOf(String s, String[] arr) {
-        int i = 0;
-        while (i < arr.length) {
-            if (s.toLowerCase().equals(arr[i].toLowerCase())) {
-                break;
-            }
-            i++;
-        }
-        return i;
+        // if (input.equalsIgnoreCase("yes")) {
+
+        // } else if (input.equalsIgnoreCase("no")) {
+
+        // } else {
+        // println("I can only take yes or no as an answear.");
+        // }
+
     }
 
     private static void println(String s) {

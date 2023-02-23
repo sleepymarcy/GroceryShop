@@ -35,4 +35,9 @@ public class Warehouse {
         new Product("Bloodwine", 14, "bottle (761ml)"),
         new Product("Magic Potion (by Druid Panoramix) Shot", 700, "can (70ml)")
     };
+
+    public static Product getProductByName(String name, Product[] section) {
+        // TODO: find a product of said name in a given collection
+        return new Product("", 0, ""); 
+    }
 }
