@@ -7,7 +7,7 @@ public class Bundle {
         this.amount = amount;
     }
 
-    public double totalPrice() {
+    public double getTotal() {
         return product.getPricePerUnit() * amount;
     }
 }
