@@ -5,8 +5,12 @@ public class Cart {
 
     public double getTotal() {
         double total = 0.0;
-        for (Bundle bundle : contents) {
-            total += bundle.getTotal();
+        // for (Bundle bundle : contents) {
+        //     if(bundle == null) break;
+        //     total += bundle.getTotal();            
+        // }
+        for(int i = 0; i < amount; i++) {
+            total += contents[i].getTotal();
         }
 
         return total;

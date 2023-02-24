@@ -1,74 +1,113 @@
-import java.util.Dictionary;
+import java.nio.file.AccessDeniedException;
 import java.util.Scanner;
 
 public class Grocery {
     final static String STORE_NAME = "Kichmart";
+    static boolean checkout = false;
 
     final static Scanner scanner = new Scanner(System.in);
-    static String inputBuffer;
+    static String inputBuffer = null;
 
     static Cart cart = new Cart();
 
     public static void main(String[] args) {
-
         println("Welcome to " + STORE_NAME);
 
-        print("We have: ");
-        for (String section : Warehouse.sections) {
-            print(section + " ");
-        }
-        println("");
-        print("What section are you interested in?: ");
+        while (!checkout) {
 
-        inputBuffer = scanner.nextLine();
-        chooseSection(inputBuffer);
-    }
+            // choose section or checkout
+            Product[] chosenSection = null;
+            String articles = null;
+            while (chosenSection == null) {
+                print("We have: ");
+                for (String section : Warehouse.sections) {
+                    print(section + " ");
+                }
+                println("");
+                println("What section are you interested in?");
+                print("(If you want to checkout type \"checkout\"): ");
 
-    public static void chooseSection(String sectionName) {
-        Product[] chosenSection;
-        if (sectionName.equalsIgnoreCase("Fruits")) {
-            chosenSection = Warehouse.fruits;
-        } else if (sectionName.equalsIgnoreCase("Vegetables")) {
-            chosenSection = Warehouse.vegetables;
-        } else if (sectionName.equalsIgnoreCase("Diary")) {
-            chosenSection = Warehouse.diary;
-        } else if (sectionName.equalsIgnoreCase("Beverages")) {
-            chosenSection = Warehouse.beverages;
-        } else {
-            println("There is no such section, sweetheart. :(");
-            return;
-        }
+                articles = scanner.nextLine();
+                if (articles.equalsIgnoreCase("checkout")) {
+                    checkout = true;
+                }
+                chosenSection = getSection(articles);
+            }
 
-        for (Product product : chosenSection) {
-            println(product.getName() + ": " + product.getPricePerUnit() + "$/" + product.getUnit());
-        }
-        println("");
+            // choose product or checkout
+            Product chosenProduct = null;
+            // TODO: find out if this is doable in a smarter manner
+            while (!inputBuffer.equalsIgnoreCase("none") && !inputBuffer.equalsIgnoreCase("checkout")
+                    && !articles.equalsIgnoreCase("checkout")
+                    && chosenProduct == null) {
+                println("We have: ");
+                for (Product product : chosenSection) {
+                    println(product.getName() + ": " + product.getPricePerUnit() + "$/" +
+                            product.getUnit());
+                }
+                println("");
+                println("What " + articles.toLowerCase() + " are you interested in?: ");
+                println("(If nothing caught your eye type \"none\"");
+                print("(If you want to checkout type \"checkout\"): ");
 
-        // sectionName is a string for instance "fruits"
-        print("What " + sectionName + " are you interested in?: ");
+                inputBuffer = scanner.nextLine();
+                if (inputBuffer.equalsIgnoreCase("checkout")) {
+                    checkout = true;
+                }
+                chosenProduct = Warehouse.getProductByName(inputBuffer, chosenSection);
+            }
 
-        inputBuffer = scanner.nextLine();
-        Product product = Warehouse.getProductByName(inputBuffer, chosenSection);
-        if (product != null) {
-            println(product.getName() + ": " + product.getPricePerUnit() + "$/" + product.getUnit());
+            println(chosenProduct.getName() + ": " + chosenProduct.getPricePerUnit() + "$/" +
+                    chosenProduct.getUnit());
             print("How much/many of it you need?: ");
 
             // TODO: make it safe
-            double quantity = scanner.nextDouble();
-            Bundle bundle = new Bundle(product, quantity);
+            inputBuffer = scanner.nextLine();
+            double quantity = Double.parseDouble(inputBuffer);
+            Bundle bundle = new Bundle(chosenProduct, quantity);
             cart.add(bundle);
 
-        } else {
-            print("I'm sorry but there is no such product.");
+            print("Is that all from this section?: ");
+
+            // inputBuffer = scanner.nextLine();
+            // if (inputBuffer.equalsIgnoreCase("Yes")) {
+            // break;
+
+            // } else if (inputBuffer.equalsIgnoreCase("No")) {
+            // // return to "What sectionName are you interested in?"
+            // } else {
+            // println("I'm sorry but I can only respond to Yes or No.");
+            // // return to "Is that all from this section?"
+            // }
+
+            // } else {
+            // print("I'm sorry but there is no such product.");
+            // }
+            // }
+            // print("Need more stuff?: ");
+            // inputBuffer = scanner.nextLine();
+            // if (inputBuffer.equalsIgnoreCase("Yes")) {
+            // // return to "What section are you interested in?"
+            // } else if (inputBuffer.equalsIgnoreCase("No")) {
+            // break;
+            // }
         }
+        // double total = cart.getTotal();
+        // println("Total amount is: " + total + "$.");
+    }
 
-        // println("Do you want to add this to you cart? ");
-        // if (input.equalsIgnoreCase("yes")) {
-        // } else if (input.equalsIgnoreCase("no")) {
-        // } else {
-        // println("I can only take yes or no as an answear.");
-        // }
-
+    static Product[] getSection(String sectionName) {
+        if (sectionName.equalsIgnoreCase("Fruits")) {
+            return Warehouse.fruits;
+        } else if (sectionName.equalsIgnoreCase("Vegetables")) {
+            return Warehouse.vegetables;
+        } else if (sectionName.equalsIgnoreCase("Diary")) {
+            return Warehouse.diary;
+        } else if (sectionName.equalsIgnoreCase("Beverages")) {
+            return Warehouse.beverages;
+        } else {
+            return null;
+        }
     }
 
     private static void println(String s) {

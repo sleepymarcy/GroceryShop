@@ -37,17 +37,13 @@ public class Warehouse {
     };
 
     public static Product getProductByName(String name, Product[] section) {
-        // Product temp = null;
+        Product chosenProduct = null;
         for (Product product : section) {
             if (product.getName().equalsIgnoreCase(name)) {
-                return product; // this ends the pętla and the function and
-                                // returns the product that was found
-                // alternatively u could:
-                // temp = product;
-                // break;
+                chosenProduct = product;
+                break;
             }
         }
-        return null;
-        // return product;
+        return chosenProduct;
     }
 }
