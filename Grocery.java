@@ -1,14 +1,16 @@
-import java.nio.file.AccessDeniedException;
 import java.util.Scanner;
 
 public class Grocery {
-    final static String STORE_NAME = "Kichmart";
+    static final String STORE_NAME = "Kichmart";
+    static final String CHECKOUT_PROMPT = "(If you want to checkout type \"checkout\"): ";
+    static final String CHECKOUT_STR = "checkout";
     static boolean checkout = false;
 
-    final static Scanner scanner = new Scanner(System.in);
+    static final Scanner scanner = new Scanner(System.in);
     static String inputBuffer = null;
 
     static Cart cart = new Cart();
+    
 
     public static void main(String[] args) {
         println("Welcome to " + STORE_NAME);
@@ -17,58 +19,72 @@ public class Grocery {
 
             // choose section or checkout
             Product[] chosenSection = null;
-            String articles = null;
-            while (chosenSection == null) {
+            String sectionName = null;
+            while (!checkout && chosenSection == null) {
                 print("We have: ");
                 for (String section : Warehouse.sections) {
                     print(section + " ");
                 }
                 println("");
                 println("What section are you interested in?");
-                print("(If you want to checkout type \"checkout\"): ");
+                print(CHECKOUT_PROMPT);
 
-                articles = scanner.nextLine();
-                if (articles.equalsIgnoreCase("checkout")) {
+                sectionName = scanner.nextLine();
+                if (sectionName.equalsIgnoreCase(CHECKOUT_STR)) {
                     checkout = true;
                 }
-                chosenSection = getSection(articles);
+                chosenSection = getSection(sectionName);
             }
 
             // choose product or checkout
             Product chosenProduct = null;
-            // TODO: find out if this is doable in a smarter manner
-            while (!inputBuffer.equalsIgnoreCase("none") && !inputBuffer.equalsIgnoreCase("checkout")
-                    && !articles.equalsIgnoreCase("checkout")
-                    && chosenProduct == null) {
+            String productName = null;
+            while (!checkout && chosenProduct == null) {
                 println("We have: ");
                 for (Product product : chosenSection) {
                     println(product.getName() + ": " + product.getPricePerUnit() + "$/" +
                             product.getUnit());
                 }
                 println("");
-                println("What " + articles.toLowerCase() + " are you interested in?: ");
+                println("What " + sectionName.toLowerCase() + " are you interested in?: ");
                 println("(If nothing caught your eye type \"none\"");
-                print("(If you want to checkout type \"checkout\"): ");
+                print(CHECKOUT_PROMPT);
 
-                inputBuffer = scanner.nextLine();
-                if (inputBuffer.equalsIgnoreCase("checkout")) {
+                productName = scanner.nextLine();
+                if (productName.equalsIgnoreCase(CHECKOUT_STR)) {
                     checkout = true;
+                } else if (productName.equalsIgnoreCase("none")) {
+                    // TODO: Figure out what to do in this situation (this is placeholder for a feature)
+                    break;
                 }
-                chosenProduct = Warehouse.getProductByName(inputBuffer, chosenSection);
+                chosenProduct = Warehouse.getProductByName(productName, chosenSection);
             }
 
-            println(chosenProduct.getName() + ": " + chosenProduct.getPricePerUnit() + "$/" +
-                    chosenProduct.getUnit());
-            print("How much/many of it you need?: ");
+            Double chosenAmount = null;
+            String givenNum = null;
+            while (!checkout && chosenAmount == null && chosenProduct != null) {
+                println(chosenProduct.getName() + ": " + chosenProduct.getPricePerUnit() + "$/" +
+                        chosenProduct.getUnit());
+                println("How much/many of it you need?: ");
+                println("(If that was a mistake type \"return\")");
+                print(CHECKOUT_PROMPT);
 
-            // TODO: make it safe
-            inputBuffer = scanner.nextLine();
-            double quantity = Double.parseDouble(inputBuffer);
-            Bundle bundle = new Bundle(chosenProduct, quantity);
-            cart.add(bundle);
+                givenNum = scanner.nextLine();
 
-            print("Is that all from this section?: ");
-
+                Bundle bundle;
+                try {
+                    chosenAmount = Double.parseDouble(givenNum);
+                    bundle = new Bundle(chosenProduct, chosenAmount);
+                    cart.add(bundle);
+                } catch (Exception e) {
+                    if (givenNum.equalsIgnoreCase("return")) {
+                        // TODO: Figure out what to do in this situation (this is placeholder for a feature)
+                        break;
+                    } else if (givenNum.equalsIgnoreCase(CHECKOUT_STR)) {
+                        checkout = true;
+                    }
+                }
+            }
             // inputBuffer = scanner.nextLine();
             // if (inputBuffer.equalsIgnoreCase("Yes")) {
             // break;
